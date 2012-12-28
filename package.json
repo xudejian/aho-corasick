@@ -18,5 +18,8 @@
   "devDependencies": {
      "nodeunit": "*",
      "coffee-script": "*"
+  },
+  "scripts": {
+    "test": "nodeunit tests"
   }
 }
