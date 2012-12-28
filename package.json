@@ -1,0 +1,17 @@
+
+{ "name"          : "aho-corasick",
+  "author"        : {
+    "name"  : "Dejian Xu",
+    "email" : "xudejian2008@gmail.com",
+    "url"   : "https://github.com/hsujian/aho-corasick"
+  },
+  "description"   : "Aho–Corasick string matching algorithm",
+  "version"       : "0.1.0",
+  "main" : "./src/aho-corasick.js",
+  "engines": { "node": "*" },
+  "dependencies": {},
+  "devDependencies": {
+     "nodeunit": "*",
+     "coffee-script": "*"
+  }
+}
