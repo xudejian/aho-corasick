@@ -33,25 +33,33 @@ class Trie
       return null unless node
     node
 
-  print: () ->
+  build_edge_png: ->
     util = require('util')
     graphviz = require('graphviz')
     g = graphviz.digraph("ac")
-    addEdge = (prefix, node) ->
-      value = node.value
-
-      g.addEdge prefix, value
-      g.addEdge value, node.fail.value, style: 'dashed' if node.fail
-      if node.is_word
+    val = (node) ->
+      node.value || node
+    link_cb = (from, to) ->
+      g.addEdge val(from), val(to)
+      if to.is_word
         option =
           style: 'filled'
           color: 'skyblue'
-        g.getNode(value).set k, v for k, v of option
-      addEdge value, sub_node for k,sub_node of node.next
+        g.getNode(val to).set k, v for k, v of option
       @
-    addEdge 'root', sub_node for k,sub_node of @next
+    fail_cb = (from, to) ->
+      g.addEdge val(from), val(to), style: 'dashed'
+    @foreach_edge link_cb, fail_cb
     g.output "png", "trie.png"
 
+  foreach_edge: (link_cb, fail_cb)->
+    each_node = (from, node) ->
+      link_cb from, node
+      fail_cb node, node.fail if node.fail
+      each_node node, sub_node for _k, sub_node of node.next
+      @
+    each_node 'root', sub_node for _k, sub_node of @next
+    @
 class AhoCorasick
   constructor: ->
     @trie = new Trie()
