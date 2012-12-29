@@ -63,7 +63,7 @@ class AhoCorasick
     @build_fail sub_node for _k,sub_node of node.next
     @
 
-  foreach_match_do_callback: (node, pos, callback) ->
+  foreach_match: (node, pos, callback) ->
     while node
       if node.is_word
         offset = pos - node.value.length
@@ -79,12 +79,11 @@ class AhoCorasick
 
       while current and not current.next[chr]
         current = current.fail
+      current = @trie unless current
 
-      if current
+      if current.next[chr]
         current = current.next[chr]
-        @foreach_match_do_callback current, idx+1, callback if callback
-      else
-        current = @trie
+        @foreach_match current, idx+1, callback if callback
     @
 
   build_edge_png: ->
