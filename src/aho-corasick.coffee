@@ -36,24 +36,21 @@ class Trie
     node = @
     for i in [0...word.length]
       chr = word.charAt i
-      if node.next[chr]
-        node = node.next[chr]
-      else
-        return null
+      node = node.next[chr]
+      return null unless node
     node
 
   print: (prefix) ->
-    out = if @value then @value else '(base)'
-    out = '[' + out + ']' if @is_word
+    out = @value || '(base)'
+    out = "[#{out}]" if @is_word
     out = prefix + out if prefix
 
     console.log out
 
     console.log [out, ' <- ', @fail.value].join '' if @fail
 
-    @next[i].print out + ' -> ' for i of @next
+    sub_node.print out + ' -> ' for _k,sub_node of @next
     @
-    
 
 class AhoCorasick
   constructor: ->
@@ -73,7 +70,7 @@ class AhoCorasick
           node.fail = fail_node
           break
 
-    @build_fail node.next[i] for i of node.next
+    @build_fail sub_node for _k,sub_node of node.next
     @
 
   foreach_match_do_callback: (node, pos, callback) ->
@@ -89,6 +86,7 @@ class AhoCorasick
 
     for idx in [0...string.length]
       chr = string.charAt idx
+      console.log ".%s", chr
 
       while current and not current.next[chr]
         current = current.fail
@@ -98,6 +96,7 @@ class AhoCorasick
         @foreach_match_do_callback current, idx+1, callback if callback
           
       else
+        console.log '>ROOT < %s', chr
         current = @trie
     
     @
