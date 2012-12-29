@@ -33,25 +33,6 @@ class Trie
       return null unless node
     node
 
-  build_edge_png: ->
-    util = require('util')
-    graphviz = require('graphviz')
-    g = graphviz.digraph("ac")
-    val = (node) ->
-      node.value || node
-    link_cb = (from, to) ->
-      g.addEdge val(from), val(to)
-      if to.is_word
-        option =
-          style: 'filled'
-          color: 'skyblue'
-        g.getNode(val to).set k, v for k, v of option
-      @
-    fail_cb = (from, to) ->
-      g.addEdge val(from), val(to), style: 'dashed'
-    @foreach_edge link_cb, fail_cb
-    g.output "png", "trie.png"
-
   foreach_edge: (link_cb, fail_cb)->
     each_node = (from, node) ->
       link_cb from, node
@@ -60,6 +41,7 @@ class Trie
       @
     each_node 'root', sub_node for _k, sub_node of @next
     @
+
 class AhoCorasick
   constructor: ->
     @trie = new Trie()
@@ -104,6 +86,26 @@ class AhoCorasick
       else
         current = @trie
     @
+
+  build_edge_png: ->
+    util = require('util')
+    graphviz = require('graphviz')
+    g = graphviz.digraph("ac")
+    val = (node) ->
+      node.value || node
+    link_cb = (from, to) ->
+      g.addEdge val(from), val(to)
+      if to.is_word
+        option =
+          style: 'filled'
+          color: 'skyblue'
+        g.getNode(val to).set k, v for k, v of option
+      on
+    fail_cb = (from, to) ->
+      g.addEdge val(from), val(to), style: 'dashed'
+    @trie.foreach_edge link_cb, fail_cb
+    g.output "png", "trie.png"
+
 
 if module
   module.exports = AhoCorasick
