@@ -6,7 +6,6 @@ class Trie
     @is_word = null
     @value = null
     @data = []
-    
 
   add: (word, data, original_word) ->
     chr = word.charAt 0
@@ -34,17 +33,24 @@ class Trie
       return null unless node
     node
 
-  print: (prefix) ->
-    out = @value || '(base)'
-    out = "[#{out}]" if @is_word
-    out = prefix + out if prefix
+  print: () ->
+    util = require('util')
+    graphviz = require('graphviz')
+    g = graphviz.digraph("ac")
+    addEdge = (prefix, node) ->
+      value = node.value
 
-    console.log out
-
-    console.log [out, ' <- ', @fail.value].join '' if @fail
-
-    sub_node.print out + ' -> ' for _k,sub_node of @next
-    @
+      g.addEdge prefix, value
+      g.addEdge value, node.fail.value, style: 'dashed' if node.fail
+      if node.is_word
+        option =
+          style: 'filled'
+          color: 'skyblue'
+        g.getNode(value).set k, v for k, v of option
+      addEdge value, sub_node for k,sub_node of node.next
+      @
+    addEdge 'root', sub_node for k,sub_node of @next
+    g.output "png", "trie.png"
 
 class AhoCorasick
   constructor: ->
@@ -87,10 +93,8 @@ class AhoCorasick
       if current
         current = current.next[chr]
         @foreach_match_do_callback current, idx+1, callback if callback
-          
       else
         current = @trie
-    
     @
 
 if module
