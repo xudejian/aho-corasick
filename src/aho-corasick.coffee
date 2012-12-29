@@ -26,12 +26,6 @@ class Trie
       node.data.push data
       node.is_word = true
 
-  find: (word) ->
-    return @ if word.length == 0 or @is_word
-
-    next = @next[word.charAt(0)]
-    if next then next.find(word.substring(1)) else null
-
   explore_fail_link: (word) ->
     node = @
     for i in [0...word.length]
@@ -86,7 +80,6 @@ class AhoCorasick
 
     for idx in [0...string.length]
       chr = string.charAt idx
-      console.log ".%s", chr
 
       while current and not current.next[chr]
         current = current.fail
@@ -96,7 +89,6 @@ class AhoCorasick
         @foreach_match_do_callback current, idx+1, callback if callback
           
       else
-        console.log '>ROOT < %s', chr
         current = @trie
     
     @
