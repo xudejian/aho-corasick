@@ -33,48 +33,38 @@
       }
     };
 
-    Trie.prototype.find = function(word) {
-      var next;
-      if (word.length === 0 || this.is_word) {
-        return this;
-      }
-      next = this.next[word.charAt(0)];
-      if (next) {
-        return next.find(word.substring(1));
-      } else {
-        return null;
-      }
-    };
-
     Trie.prototype.explore_fail_link = function(word) {
       var chr, i, node, _i, _ref;
       node = this;
       for (i = _i = 0, _ref = word.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         chr = word.charAt(i);
-        if (node.next[chr]) {
-          node = node.next[chr];
-        } else {
+        node = node.next[chr];
+        if (!node) {
           return null;
         }
       }
       return node;
     };
 
-    Trie.prototype.print = function(prefix) {
-      var i, out;
-      out = this.value ? this.value : '(base)';
-      if (this.is_word) {
-        out = '[' + out + ']';
-      }
-      if (prefix) {
-        out = prefix + out;
-      }
-      console.log(out);
-      if (this.fail) {
-        console.log([out, ' <- ', this.fail.value].join(''));
-      }
-      for (i in this.next) {
-        this.next[i].print(out + ' -> ');
+    Trie.prototype.foreach_edge = function(link_cb, fail_cb) {
+      var each_node, sub_node, _k, _ref;
+      each_node = function(from, node) {
+        var sub_node, _k, _ref;
+        link_cb(from, node);
+        if (node.fail) {
+          fail_cb(node, node.fail);
+        }
+        _ref = node.next;
+        for (_k in _ref) {
+          sub_node = _ref[_k];
+          each_node(node, sub_node);
+        }
+        return this;
+      };
+      _ref = this.next;
+      for (_k in _ref) {
+        sub_node = _ref[_k];
+        each_node('root', sub_node);
       }
       return this;
     };
@@ -94,7 +84,7 @@
     };
 
     AhoCorasick.prototype.build_fail = function(node) {
-      var fail_node, i, _i, _ref;
+      var fail_node, i, sub_node, _i, _k, _ref, _ref1;
       node = node || this.trie;
       node.fail = null;
       if (node.value) {
@@ -106,13 +96,15 @@
           }
         }
       }
-      for (i in node.next) {
-        this.build_fail(node.next[i]);
+      _ref1 = node.next;
+      for (_k in _ref1) {
+        sub_node = _ref1[_k];
+        this.build_fail(sub_node);
       }
       return this;
     };
 
-    AhoCorasick.prototype.foreach_match_do_callback = function(node, pos, callback) {
+    AhoCorasick.prototype.foreach_match = function(node, pos, callback) {
       var offset;
       while (node) {
         if (node.is_word) {
@@ -132,16 +124,49 @@
         while (current && !current.next[chr]) {
           current = current.fail;
         }
-        if (current) {
+        if (!current) {
+          current = this.trie;
+        }
+        if (current.next[chr]) {
           current = current.next[chr];
           if (callback) {
-            this.foreach_match_do_callback(current, idx + 1, callback);
+            this.foreach_match(current, idx + 1, callback);
           }
-        } else {
-          current = this.trie;
         }
       }
       return this;
+    };
+
+    AhoCorasick.prototype.build_edge_png = function() {
+      var fail_cb, g, graphviz, link_cb, util, val;
+      util = require('util');
+      graphviz = require('graphviz');
+      g = graphviz.digraph("ac");
+      val = function(node) {
+        return node.value || node;
+      };
+      link_cb = function(from, to) {
+        var k, option, v;
+        g.addEdge(val(from), val(to));
+        if (to.is_word) {
+          option = {
+            style: 'filled',
+            color: 'skyblue'
+          };
+          for (k in option) {
+            v = option[k];
+            g.getNode(val(to)).set(k, v);
+          }
+        }
+        return true;
+      };
+      fail_cb = function(from, to) {
+        return g.addEdge(val(from), val(to), {
+          style: 'dashed'
+        });
+      };
+      this.trie.foreach_edge(link_cb, fail_cb);
+      return g.output("png", "trie.png");
     };
 
     return AhoCorasick;
