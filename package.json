@@ -17,7 +17,8 @@
   "dependencies": {},
   "devDependencies": {
      "nodeunit": "*",
-     "coffee-script": "*"
+     "coffee-script": "*",
+     "graphviz": "*"
   },
   "scripts": {
     "test": "nodeunit tests"
