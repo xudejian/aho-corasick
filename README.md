@@ -6,10 +6,13 @@ aho-corasick - Aho–Corasick string matching algorithm
 Installation
 ============
 
-	$ npm install hsujian/aho-corasick
+	$ npm install aho-corasick
 
-Example (coffee)
+Example
 ============
+
+coffee
+------
 <pre><code>
   ac = new AhoCorasick()
 
@@ -23,3 +26,13 @@ Example (coffee)
     actual[found_word] ?= 0
     actual[found_word]++
 </code></pre>
+
+Thanks
+===========
+
+* Thomas Booth [https://github.com/tombooth/aho-corasick.js](https://github.com/tombooth/aho-corasick.js)
+
+References
+===========
+wikipedia: [Aho-Corasick](https://en.wikipedia.org/wiki/Aho-Corasick)
+
