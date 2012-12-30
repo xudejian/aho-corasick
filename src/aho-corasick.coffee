@@ -39,7 +39,7 @@ class Trie
       fail_cb node, node.fail if node.fail
       each_node node, sub_node for _k, sub_node of node.next
       @
-    each_node 'root', sub_node for _k, sub_node of @next
+    each_node null, sub_node for _k, sub_node of @next
     @
 
 class AhoCorasick
@@ -89,23 +89,29 @@ class AhoCorasick
   build_edge_png: ->
     util = require('util')
     graphviz = require('graphviz')
-    g = graphviz.digraph("ac")
-    val = (node) ->
-      node.value || node
+    g = graphviz.digraph("Trie")
+    map_node = (node) ->
+      if node and node.value
+        g.from node.value
+      else
+        g.from ''
     link_cb = (from, to) ->
-      to_str = val to
-      g.addEdge val(from), to_str
-      g.getNode(to_str).set 'label', to_str.charAt to_str.length - 1
+      to_label = to.value.charAt to.value.length - 1
+      to_node = map_node to
+      from_node = map_node from
+      g.addEdge from_node, to_node
+      to_node.set 'label', to_label
       if to.is_word
         option =
           style: 'filled'
           color: 'skyblue'
-        g.getNode(val to).set k, v for k, v of option
+        to_node.set k, v for k, v of option
       on
     fail_cb = (from, to) ->
-      g.addEdge val(from), val(to), style: 'dashed'
+      g.addEdge map_node(from), map_node(to), style: 'dashed'
     @trie.foreach_edge link_cb, fail_cb
-    g.output "png", "trie.png"
+    console.log g.to_dot()
+    g.output 'png', 'trie.png'
 
 
 if module
