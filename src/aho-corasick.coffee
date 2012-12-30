@@ -93,7 +93,9 @@ class AhoCorasick
     val = (node) ->
       node.value || node
     link_cb = (from, to) ->
-      g.addEdge val(from), val(to)
+      to_str = val to
+      g.addEdge val(from), to_str
+      g.getNode(to_str).set 'label', to_str.charAt to_str.length - 1
       if to.is_word
         option =
           style: 'filled'
