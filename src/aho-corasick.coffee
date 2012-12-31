@@ -33,13 +33,9 @@ class Trie
       return null unless node
     node
 
-  foreach_edge: (link_cb, fail_cb)->
-    each_node = (from, node) ->
-      link_cb from, node
-      fail_cb node, node.fail if node.fail
-      each_node node, sub_node for _k, sub_node of node.next
-      @
-    each_node null, sub_node for _k, sub_node of @next
+  each_node: (callback) ->
+    callback @, node for _k, node of @next
+    node.each_node callback for _k, node of @next
     @
 
 class AhoCorasick
@@ -86,33 +82,33 @@ class AhoCorasick
         @foreach_match current, idx+1, callback if callback
     @
 
-  build_edge_png: ->
-    util = require('util')
-    graphviz = require('graphviz')
-    g = graphviz.digraph("Trie")
-    map_node = (node) ->
+  to_dot: ()->
+    dot = ['digraph Trie {']
+    v_ = (node) ->
       if node and node.value
-        g.from node.value
+        "\"#{node.value}\""
       else
-        g.from ''
+        "\"\""
+    last_chr = (str) ->
+      str.charAt str.length - 1 if str
     link_cb = (from, to) ->
-      to_label = to.value.charAt to.value.length - 1
-      to_node = map_node to
-      from_node = map_node from
-      g.addEdge from_node, to_node
-      to_node.set 'label', to_label
+      to_label = last_chr to.value
+      to_opt = ["label = \"#{to_label}\""]
       if to.is_word
         option =
           style: 'filled'
           color: 'skyblue'
-        to_node.set k, v for k, v of option
-      on
+        to_opt.push "#{k} = \"#{v}\"" for k, v of option
+      dot.push "#{v_(from)} -> #{v_(to)};"
+      dot.push "#{v_(to)} [ #{to_opt.join(',')} ];"
+      fail_cb from, to
     fail_cb = (from, to) ->
-      g.addEdge map_node(from), map_node(to), style: 'dashed'
-    @trie.foreach_edge link_cb, fail_cb
-    console.log g.to_dot()
-    g.output 'png', 'trie.png'
-
+      [from, to] = [to, to.fail]
+      style = if to then 'dashed' else 'dotted'
+      dot.push "#{v_(from)} -> #{v_(to)} [ style = \"#{style}\" ];"
+    @trie.each_node link_cb
+    dot.push '}'
+    dot.join "\n"
 
 if module
   module.exports = AhoCorasick
