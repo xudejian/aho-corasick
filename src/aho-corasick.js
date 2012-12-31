@@ -46,25 +46,17 @@
       return node;
     };
 
-    Trie.prototype.foreach_edge = function(link_cb, fail_cb) {
-      var each_node, sub_node, _k, _ref;
-      each_node = function(from, node) {
-        var sub_node, _k, _ref;
-        link_cb(from, node);
-        if (node.fail) {
-          fail_cb(node, node.fail);
-        }
-        _ref = node.next;
-        for (_k in _ref) {
-          sub_node = _ref[_k];
-          each_node(node, sub_node);
-        }
-        return this;
-      };
+    Trie.prototype.each_node = function(callback) {
+      var node, _k, _ref, _ref1;
       _ref = this.next;
       for (_k in _ref) {
-        sub_node = _ref[_k];
-        each_node('root', sub_node);
+        node = _ref[_k];
+        callback(this, node);
+      }
+      _ref1 = this.next;
+      for (_k in _ref1) {
+        node = _ref1[_k];
+        node.each_node(callback);
       }
       return this;
     };
@@ -137,17 +129,25 @@
       return this;
     };
 
-    AhoCorasick.prototype.build_edge_png = function() {
-      var fail_cb, g, graphviz, link_cb, util, val;
-      util = require('util');
-      graphviz = require('graphviz');
-      g = graphviz.digraph("ac");
-      val = function(node) {
-        return node.value || node;
+    AhoCorasick.prototype.to_dot = function() {
+      var dot, fail_cb, last_chr, link_cb, v_;
+      dot = ['digraph Trie {'];
+      v_ = function(node) {
+        if (node && node.value) {
+          return "\"" + node.value + "\"";
+        } else {
+          return "\"\"";
+        }
+      };
+      last_chr = function(str) {
+        if (str) {
+          return str.charAt(str.length - 1);
+        }
       };
       link_cb = function(from, to) {
-        var k, option, v;
-        g.addEdge(val(from), val(to));
+        var k, option, to_label, to_opt, v;
+        to_label = last_chr(to.value);
+        to_opt = ["label = \"" + to_label + "\""];
         if (to.is_word) {
           option = {
             style: 'filled',
@@ -155,18 +155,22 @@
           };
           for (k in option) {
             v = option[k];
-            g.getNode(val(to)).set(k, v);
+            to_opt.push("" + k + " = \"" + v + "\"");
           }
         }
-        return true;
+        dot.push("" + (v_(from)) + " -> " + (v_(to)) + ";");
+        dot.push("" + (v_(to)) + " [ " + (to_opt.join(',')) + " ];");
+        return fail_cb(from, to);
       };
       fail_cb = function(from, to) {
-        return g.addEdge(val(from), val(to), {
-          style: 'dashed'
-        });
+        var style, _ref;
+        _ref = [to, to.fail], from = _ref[0], to = _ref[1];
+        style = to ? 'dashed' : 'dotted';
+        return dot.push("" + (v_(from)) + " -> " + (v_(to)) + " [ style = \"" + style + "\" ];");
       };
-      this.trie.foreach_edge(link_cb, fail_cb);
-      return g.output("png", "trie.png");
+      this.trie.each_node(link_cb);
+      dot.push('}');
+      return dot.join("\n");
     };
 
     return AhoCorasick;
