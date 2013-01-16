@@ -12,7 +12,11 @@
     "match"
   ],
   "version"     : "0.1.2",
-  "main" : "./src/aho-corasick.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hsujian/aho-corasick.git"
+  },
+  "main" : "./src/aho-corasick",
   "engines": { "node": "*" },
   "dependencies": {},
   "devDependencies": {
