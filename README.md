@@ -1,4 +1,4 @@
-# About [![Build Status](https://travis-ci.org/hsujian/aho-corasick.png?branch=master)](https://travis-ci.org/hsujian/aho-corasick)
+# About [![Build Status](https://travis-ci.org/xudejian/aho-corasick.png?branch=master)](https://travis-ci.org/xudejian/aho-corasick)
 
 
 aho-corasick - Aho–Corasick string matching algorithm

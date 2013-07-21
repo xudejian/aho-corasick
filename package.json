@@ -1,9 +1,8 @@
-
 { "name"    : "aho-corasick",
   "author"  : {
     "name"  : "Dejian Xu",
     "email" : "xudejian2008@gmail.com",
-    "url"   : "https://github.com/hsujian/aho-corasick"
+    "url"   : "https://github.com/xudejian/aho-corasick"
   },
   "description" : "Aho–Corasick string matching algorithm",
   "keywords": [
@@ -12,10 +11,10 @@
     "match"
   ],
   "version"     : "0.1.3",
-  "homepage": "https://github.com/hsujian/aho-corasick",
+  "homepage": "https://github.com/xudejian/aho-corasick",
   "repository": {
     "type": "git",
-    "url": "git://github.com/hsujian/aho-corasick.git"
+    "url": "git://github.com/xudejian/aho-corasick.git"
   },
   "main" : "./src/aho-corasick",
   "engines": { "node": "*" },
