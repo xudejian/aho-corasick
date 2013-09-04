@@ -37,10 +37,16 @@ aho-corasick - Aho–Corasick string matching algorithm
 	
 	You also need to install [GraphViz](http://www.graphviz.org/)
 
-#Thanks
+
+# Author
+
+Dejian Xu
+[Google+](https://plus.google.com/116305544434538996428?rel=author)
+
+##Thanks
 
 * Thomas Booth [https://github.com/tombooth/aho-corasick.js](https://github.com/tombooth/aho-corasick.js)
 * glejeune node-graphviz [https://github.com/glejeune/node-graphviz](https://github.com/glejeune/node-graphviz)
 
-#References
+##References
 wikipedia: [Aho-Corasick](https://en.wikipedia.org/wiki/Aho-Corasick)
