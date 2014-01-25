@@ -50,3 +50,7 @@ Dejian Xu
 
 ##References
 wikipedia: [Aho-Corasick](https://en.wikipedia.org/wiki/Aho-Corasick)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/xudejian/aho-corasick/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
