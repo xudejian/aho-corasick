@@ -1,4 +1,7 @@
-# About [![Build Status](https://travis-ci.org/xudejian/aho-corasick.png?branch=master)](https://travis-ci.org/xudejian/aho-corasick)
+# About
+
+[![Build Status](https://travis-ci.org/xudejian/aho-corasick.png?branch=master)](https://travis-ci.org/xudejian/aho-corasick)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/xudejian/aho-corasick/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 
 aho-corasick - Aho–Corasick string matching algorithm
@@ -51,6 +54,4 @@ Dejian Xu
 ##References
 wikipedia: [Aho-Corasick](https://en.wikipedia.org/wiki/Aho-Corasick)
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/xudejian/aho-corasick/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
